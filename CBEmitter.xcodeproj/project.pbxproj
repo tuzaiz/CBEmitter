@@ -172,7 +172,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0610;
-				ORGANIZATIONNAME = Cloudbar;
+				ORGANIZATIONNAME = Cloudbay;
 				TargetAttributes = {
 					4765B3C91A24E62200393075 = {
 						CreatedOnToolsVersion = 6.1;

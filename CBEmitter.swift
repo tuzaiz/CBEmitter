@@ -3,7 +3,7 @@
 //  CBEmitter
 //
 //  Created by Henry on 2014/11/26.
-//  Copyright (c) 2014年 Cloudbar. All rights reserved.
+//  Copyright (c) 2014年 Cloudbay. All rights reserved.
 //
 
 import UIKit
@@ -14,9 +14,16 @@ class CBEmitter: NSObject {
     
     private var listeners : Dictionary<String, [CBListener]> = Dictionary()
     
-    internal func on(key:String, emit:([NSObject : AnyObject]?) -> Void) -> CBListener {
+    class func defaultEmitter() -> CBEmitter {
+        struct Shared {
+            static let instance = CBEmitter()
+        }
+        return Shared.instance
+    }
+    
+    internal func on(key:String, callback:([NSObject : AnyObject]?) -> Void) -> CBListener {
         var listeners = self.listeners[key]
-        var listener = CBListener(key: key, once: false, callback: emit)
+        var listener = CBListener(key: key, once: false, callback: callback)
         listener.emitter = self
         if listeners != nil {
             listeners?.append(listener)
@@ -33,9 +40,9 @@ class CBEmitter: NSObject {
         self.removeListener(listener)
     }
     
-    internal func once(key:String, emit:([NSObject : AnyObject]?) -> Void) -> CBListener {
+    internal func once(key:String, callback:([NSObject : AnyObject]?) -> Void) -> CBListener {
         var listeners = self.listeners[key]
-        var listener = CBListener(key: key, once: true, callback: emit)
+        var listener = CBListener(key: key, once: true, callback: callback)
         listener.emitter = self
         if listeners != nil {
             listeners?.append(listener)

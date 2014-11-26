@@ -3,7 +3,7 @@
 //  CBEmitter
 //
 //  Created by Henry on 2014/11/26.
-//  Copyright (c) 2014年 Cloudbar. All rights reserved.
+//  Copyright (c) 2014年 Cloudbay. All rights reserved.
 //
 
 import UIKit

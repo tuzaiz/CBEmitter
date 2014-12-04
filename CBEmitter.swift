@@ -12,7 +12,7 @@ let EmitterGlobalNotificationKey = "EmitterGlobalNotificationKey"
 
 class CBEmitter: NSObject {
     
-    private var listeners : Dictionary<String, [CBListener]> = Dictionary()
+    private var listeners : [String : [CBListener]] = Dictionary()
     
     override init() {
         super.init()
@@ -31,15 +31,13 @@ class CBEmitter: NSObject {
     }
     
     internal func on(key:String, callback:([NSObject : AnyObject]?) -> Void) -> CBListener {
-        var listeners = self.listeners[key]
         var listener = CBListener(key: key, once: false, callback: callback)
         listener.emitter = self
-        if listeners != nil {
-            listeners?.append(listener)
+        if var listeners = self.listeners[key] {
+            listeners.append(listener)
             self.listeners[key] = listeners
         } else {
-            listeners = [listener]
-            self.listeners[key] = listeners
+            self.listeners[key] = [listener]
         }
         return listener
     }
@@ -49,25 +47,22 @@ class CBEmitter: NSObject {
     }
     
     internal func once(key:String, callback:([NSObject : AnyObject]?) -> Void) -> CBListener {
-        var listeners = self.listeners[key]
         var listener = CBListener(key: key, once: true, callback: callback)
         listener.emitter = self
-        if listeners != nil {
-            listeners?.append(listener)
+        if var listeners = self.listeners[key] {
+            listeners.append(listener)
             self.listeners[key] = listeners
         } else {
-            listeners = [listener]
-            self.listeners[key] = listeners
+            self.listeners[key] = [listener]
         }
         return listener
     }
     
     internal func removeListener(listener:CBListener) {
-        var listeners = self.listeners[listener.key]
-        if listeners != nil {
-            for (index, listen) in enumerate(listeners!) {
+        if var listeners = self.listeners[listener.key] {
+            for (index, listen) in enumerate(listeners) {
                 if listen == listener {
-                    listeners?.removeAtIndex(index)
+                    listeners.removeAtIndex(index)
                 }
             }
             self.listeners[listener.key] = listeners
@@ -101,18 +96,11 @@ class CBEmitter: NSObject {
     }
     
     class func emitToAllEmitters(key:String, data:Dictionary<NSObject, AnyObject>?) {
-        var userInfo : [String : AnyObject]?
+        var userInfo : [String : AnyObject] = ["key": key]
         if let d = data {
-            userInfo = [
-                "key": key,
-                "data": d
-            ]
-        } else {
-            userInfo = [
-                "key": key
-            ]
+            userInfo.updateValue(d, forKey: "data")
         }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(EmitterGlobalNotificationKey, object: nil, userInfo: userInfo)
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.postNotificationName(EmitterGlobalNotificationKey, object: nil, userInfo: userInfo)
     }
 }

@@ -3,6 +3,52 @@ CBEmitter
 
 An event driven library like eventEmitter in Swift.
 
+# Sample
+
+```
+var emitter = CBEmitter()
+emitter.on("notificationKey") {(userInfo) in
+  println("Do something")
+}
+emitter.emit("notificationKey", data: nil)
+```
+
+# Create emitter
+
+Every emitter are independent of others, and can pass the emitter from instance to instance.
+
+```
+var emitter = CBEmitter()
+```
+
+# Start observer
+
+```
+emitter.on("listenKey") { data in
+  // Here is the code when emit.
+}
+```
+
+# Stop observer
+
+```
+emitter.off("listenKey")
+```
+
+# Observer once
+
+```
+emitter.once("listenKey") { data in
+  // Here will only run once.
+}
+```
+
+# Trigger emitter
+
+```
+emitter.emit("listenKey", data: ["dataKey":"dataValue"])
+```
+
 # License
 
 ConciseCore is released under an MIT license. 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 Cloudbay. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 let EmitterGlobalNotificationKey = "EmitterGlobalNotificationKey"
 
@@ -79,7 +79,7 @@ class CBEmitter: NSObject {
         }
     }
     
-    internal func emit(key:String, data:Dictionary<NSObject, AnyObject>?) {
+    internal func emit(key:String, data:[NSObject: AnyObject]?) {
         if var listeners = self.listeners[key] {
             for listener in listeners {
                 listener.fire(data)
@@ -87,7 +87,7 @@ class CBEmitter: NSObject {
         }
     }
     
-    func globalEmitterDidEmit(notification : NSNotification) {
+    dynamic private func globalEmitterDidEmit(notification : NSNotification) {
         if let dict = notification.userInfo as? [String : AnyObject] {
             let key = dict["key"] as String
             let data = dict["data"] as [NSObject : AnyObject]
@@ -95,7 +95,7 @@ class CBEmitter: NSObject {
         }
     }
     
-    class func emitToAllEmitters(key:String, data:Dictionary<NSObject, AnyObject>?) {
+    class func emitToAllEmitters(key:String, data:[NSObject: AnyObject]?) {
         var userInfo : [String : AnyObject] = ["key": key]
         if let d = data {
             userInfo.updateValue(d, forKey: "data")

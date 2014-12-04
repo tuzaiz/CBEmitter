@@ -6,15 +6,15 @@
 //  Copyright (c) 2014年 Cloudbay. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class CBListener : NSObject {
-    var callback : (Dictionary<NSObject, AnyObject>?) -> Void
+    var callback : ([NSObject: AnyObject]?) -> Void
     var key : String
     var once : Bool
     var emitter : CBEmitter?
     
-    init(key:String, once:Bool, callback:(Dictionary<NSObject, AnyObject>?)->Void) {
+    init(key:String, once:Bool, callback:([NSObject:AnyObject]?)->Void) {
         self.key = key
         self.callback = callback
         self.once = once

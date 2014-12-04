@@ -19,6 +19,10 @@ class CBEmitter: NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "globalEmitterDidEmit:", name: EmitterGlobalNotificationKey, object: nil)
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     class func defaultEmitter() -> CBEmitter {
         struct Shared {
             static let instance = CBEmitter()
@@ -80,24 +84,24 @@ class CBEmitter: NSObject {
         }
     }
     
-    internal func emit(key:String, userInfo:Dictionary<NSObject, AnyObject>?) {
+    internal func emit(key:String, data:Dictionary<NSObject, AnyObject>?) {
         if var listeners = self.listeners[key] {
             for listener in listeners {
-                listener.fire(userInfo)
+                listener.fire(data)
             }
         }
     }
     
-    private func globalEmitterDidEmit(notification : NSNotification) {
+    func globalEmitterDidEmit(notification : NSNotification) {
         if let dict = notification.userInfo as? [String : AnyObject] {
             let key = dict["key"] as String
             let data = dict["data"] as [NSObject : AnyObject]
-            self.emit(key, userInfo: data)
+            self.emit(key, data: data)
         }
     }
     
     class func emitToAllEmitters(key:String, data:Dictionary<NSObject, AnyObject>?) {
-        var userInfo : [String : AnyObject]
+        var userInfo : [String : AnyObject]?
         if let d = data {
             userInfo = [
                 "key": key,

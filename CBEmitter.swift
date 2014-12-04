@@ -8,11 +8,16 @@
 
 import UIKit
 
-let emitterPrefixKey = "Emitter"
+let EmitterGlobalNotificationKey = "EmitterGlobalNotificationKey"
 
 class CBEmitter: NSObject {
     
     private var listeners : Dictionary<String, [CBListener]> = Dictionary()
+    
+    override init() {
+        super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "globalEmitterDidEmit:", name: EmitterGlobalNotificationKey, object: nil)
+    }
     
     class func defaultEmitter() -> CBEmitter {
         struct Shared {
@@ -36,7 +41,6 @@ class CBEmitter: NSObject {
     }
     
     internal func off(listener:CBListener) {
-        listener.stopListening()
         self.removeListener(listener)
     }
     
@@ -66,7 +70,17 @@ class CBEmitter: NSObject {
         }
     }
     
-    func emit(key:String, userInfo:Dictionary<NSObject, AnyObject>?) {
+    internal func addListener(listener:CBListener) {
+        if var listeners = self.listeners[listener.key] {
+            listeners.append(listener)
+            self.listeners[listener.key] = listeners
+        } else {
+            var listeners = [listener]
+            self.listeners[listener.key] = listeners
+        }
+    }
+    
+    internal func emit(key:String, userInfo:Dictionary<NSObject, AnyObject>?) {
         if var listeners = self.listeners[key] {
             for listener in listeners {
                 listener.fire(userInfo)
@@ -74,7 +88,27 @@ class CBEmitter: NSObject {
         }
     }
     
-    class func emit(key:String, userInfo:Dictionary<NSObject, AnyObject>?) {
-        NSNotificationCenter.defaultCenter().postNotificationName("\(emitterPrefixKey)_\(key)", object: nil, userInfo: userInfo)
+    private func globalEmitterDidEmit(notification : NSNotification) {
+        if let dict = notification.userInfo as? [String : AnyObject] {
+            let key = dict["key"] as String
+            let data = dict["data"] as [NSObject : AnyObject]
+            self.emit(key, userInfo: data)
+        }
+    }
+    
+    class func emitToAllEmitters(key:String, data:Dictionary<NSObject, AnyObject>?) {
+        var userInfo : [String : AnyObject]
+        if let d = data {
+            userInfo = [
+                "key": key,
+                "data": d
+            ]
+        } else {
+            userInfo = [
+                "key": key
+            ]
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(EmitterGlobalNotificationKey, object: nil, userInfo: userInfo)
     }
 }

@@ -20,15 +20,6 @@ class CBListener : NSObject {
         self.once = once
         super.init()
         
-        self.startListening()
-    }
-    
-    func startListening() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventDidTrigger:", name: "\(emitterPrefixKey)_\(self.key)", object: nil)
-    }
-    
-    func stopListening() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func eventDidTrigger(notification : NSNotification) {
@@ -38,7 +29,6 @@ class CBListener : NSObject {
     func fire(userInfo : [NSObject : AnyObject]?) {
         self.callback(userInfo)
         if self.once {
-            self.stopListening()
             if let emitter = self.emitter
             {
                 emitter.removeListener(self)

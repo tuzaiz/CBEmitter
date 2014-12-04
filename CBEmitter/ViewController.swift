@@ -18,18 +18,16 @@ class ViewController: UIViewController {
         })
         
         emitter.emit("trigger", userInfo: ["data": "1"])
-        CBEmitter.emit("trigger", userInfo: ["data": "2"])
+        CBEmitter.emitToAllEmitters("trigger", data: ["data":"2"])
 
         emitter.off(listener)
         emitter.emit("trigger", userInfo: ["data": "3"])
         
         emitter.off(listener)
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 

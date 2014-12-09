@@ -67,8 +67,9 @@ CBEmitter.emitToAllEmitters("listenKey", data: ["dataKey":"dataValue"])
 
 # TODO
 
-* Use `key.*` and more selector.
-* Add some promise style functions.
+* Use `key.*` and more selector to match listeners.
+* Add some promise style functions. 
+* Add callback when listener did finish, off.
 
 # License
 

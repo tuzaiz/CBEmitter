@@ -31,6 +31,12 @@ var emitter = CBEmitter()
 emitter.on("listenKey") { data in
   // Here is the code when emit.
 }
+
+OR
+
+emitter.on("listenKey").then { data in
+  // Here is the code when emit.
+}
 ```
 
 # Stop observer

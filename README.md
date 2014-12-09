@@ -3,6 +3,10 @@ CBEmitter
 
 An event driven library like eventEmitter in Swift.
 
+# How to use
+
+Copy the two files `CBEmitter.swift` and `CBListener.swift` to your project.
+
 # Sample
 
 ```

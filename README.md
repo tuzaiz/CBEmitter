@@ -43,7 +43,7 @@ emitter.off("listenKey")
 
 ```
 emitter.once("listenKey") { data in
-  // Here will only run once.
+  // Here will run only once.
 }
 ```
 
@@ -52,6 +52,17 @@ emitter.once("listenKey") { data in
 ```
 emitter.emit("listenKey", data: ["dataKey":"dataValue"])
 ```
+
+# Emit to all emitters
+
+```
+CBEmitter.emitToAllEmitters("listenKey", data: ["dataKey":"dataValue"])
+```
+
+# TODO
+
+* Use `key.*` and more selector.
+* Add some promise style functions.
 
 # License
 

@@ -15,7 +15,15 @@ class ViewController: UIViewController {
         var emitter = CBEmitter.defaultEmitter()
 
         var listener = emitter.on("triggerKey") {data in
-            println("Event triggered with data: \(data)")
+            println("[1] Event triggered with data: \(data)")
+        }
+        
+        emitter.once("triggerKey").then { (data) -> Void in
+            println("[2] Event triggered with data: \(data)")
+        }
+        
+        emitter.on("triggerKey2").then { (data) -> Void in
+            println("[3] Event triggered with data: \(data)")
         }
         
         emitter.emit("triggerKey", data: ["data": "1"])
@@ -23,6 +31,10 @@ class ViewController: UIViewController {
 
         emitter.off(listener)
         emitter.emit("triggerKey", data: ["data": "3"])
+        
+        emitter.emit("triggerKey2", data: ["data": "4"])
+        emitter.off("triggerKey2")
+        emitter.emit("triggerKey2", data: ["data": "5"])
     }
 
     override func didReceiveMemoryWarning() {

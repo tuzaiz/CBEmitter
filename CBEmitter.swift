@@ -42,12 +42,42 @@ class CBEmitter: NSObject {
         return listener
     }
     
+    internal func on(key:String) -> CBListener {
+        var listener = CBListener(key: key, once:false)
+        listener.emitter = self
+        if var listeners = self.listeners[key] {
+            listeners.append(listener)
+            self.listeners[key] = listeners
+        } else {
+            self.listeners[key] = [listener]
+        }
+        return listener
+    }
+    
     internal func off(listener:CBListener) {
         self.removeListener(listener)
     }
     
+    internal func off(key:String) {
+        if let index = self.listeners.indexForKey(key) {
+            self.listeners.removeAtIndex(index)
+        }
+    }
+    
     internal func once(key:String, callback:([NSObject : AnyObject]?) -> Void) -> CBListener {
         var listener = CBListener(key: key, once: true, callback: callback)
+        listener.emitter = self
+        if var listeners = self.listeners[key] {
+            listeners.append(listener)
+            self.listeners[key] = listeners
+        } else {
+            self.listeners[key] = [listener]
+        }
+        return listener
+    }
+    
+    internal func once(key:String) -> CBListener {
+        var listener = CBListener(key: key, once:true)
         listener.emitter = self
         if var listeners = self.listeners[key] {
             listeners.append(listener)
